@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACVS – AI-Powered Cassava Value Optimization System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind Config for Deep Green Brand Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef8f2',
+                            100: '#d7eede',
+                            500: '#1b7a43',
+                            600: '#156135',
+                            700: '#0f4827',
+                            900: '#082816',
+                        },
+                        navy: {
+                            800: '#122031',
+                            900: '#0b1320',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        .scanner-beam {
+            animation: scanline 2s infinite linear;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-full flex flex-col overflow-hidden">
+
+    <!-- Top Header Bar -->
+    <header class="bg-navy-900 text-white h-16 flex items-center justify-between px-6 shrink-0 shadow-md z-20">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 bg-brand-600 px-3 py-1.5 rounded-lg text-white font-bold tracking-wide">
+                <i class="fa-solid fa-leaf"></i>
+                <span class="text-lg">ACVS</span>
+            </div>
+            <div>
+                <h1 class="text-sm font-semibold tracking-wide text-slate-100">AI-Powered Cassava Value Optimization System</h1>
+                <p class="text-xs text-slate-400">Smart Cassava, Greater Value &bull; Industrial Processing Intelligence</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-6">
+            <div class="hidden md:flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-300 border border-slate-700">
+                <i class="fa-regular fa-clock text-brand-400"></i>
+                <span id="live-clock">Loading time...</span>
+            </div>
+            
+            <div class="relative cursor-pointer" onclick="openNotifications()">
+                <div class="bg-slate-800 p-2 rounded-full hover:bg-slate-700 transition relative">
+                    <i class="fa-regular fa-bell text-slate-300"></i>
+                    <span class="absolute top-0 right-0 h-2.5 w-2.5 bg-rose-500 rounded-full ring-2 ring-navy-900"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 border-l border-slate-700 pl-4">
+                <div class="h-9 w-9 rounded-full bg-brand-500 flex items-center justify-center font-bold text-white shadow">
+                    FP
+                </div>
+                <div class="hidden lg:block text-left">
+                    <p class="text-xs font-semibold text-white">Factory Plant #03</p>
+                    <p class="text-[10px] text-brand-400">Quality Control Lead</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-navy-900 text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800 select-none">
+            <div class="py-4 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+                <div class="px-3 pb-2 text-[10px] uppercase font-bold tracking-wider text-slate-500">Navigation</div>
+                
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition bg-brand-600 text-white shadow-sm">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" onclick="switchTab('smart-station')" id="nav-smart-station" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-microchip w-5 text-center"></i>
+                    <span>Smart Intake Station</span>
+                </a>
+
+                <a href="#" onclick="switchTab('registration')" id="nav-registration" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-camera-retro w-5 text-center"></i>
+                    <span>Batch Registration</span>
+                </a>
+
+                <a href="#" onclick="switchTab('analysis')" id="nav-analysis" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-brain w-5 text-center"></i>
+                    <span>Batch Analysis</span>
+                </a>
+
+                <a href="#" onclick="switchTab('forecast')" id="nav-forecast" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Quality Forecast</span>
+                </a>
+
+                <a href="#" onclick="switchTab('decision')" id="nav-decision" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-sliders w-5 text-center"></i>
+                    <span>Processing Decision</span>
+                </a>
+
+                <a href="#" onclick="switchTab('priority')" id="nav-priority" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-list-ol w-5 text-center"></i>
+                    <span>Batch Priority Queue</span>
+                </a>
+
+                <div class="pt-4 px-3 pb-2 text-[10px] uppercase font-bold tracking-wider text-slate-500">Analytics & AI</div>
+
+                <a href="#" onclick="switchTab('architecture')" id="nav-architecture" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-network-wired w-5 text-center"></i>
+                    <span>4-Layer Architecture</span>
+                </a>
+
+                <a href="#" onclick="switchTab('reports')" id="nav-reports" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-file-pdf w-5 text-center"></i>
+                    <span>Reports & Exports</span>
+                </a>
+
+                <a href="#" onclick="switchTab('assistant')" id="nav-assistant" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition hover:bg-slate-800 hover:text-white">
+                    <i class="fa-solid fa-robot w-5 text-center"></i>
+                    <span>AI Assistant</span>
+                </a>
+            </div>
+
+            <!-- Sidebar Footer badge -->
+            <div class="p-3 bg-slate-950 border-t border-slate-800 text-xs">
+                <div class="flex items-center justify-between text-slate-400 mb-1">
+                    <span>System Status</span>
+                    <span class="flex items-center text-emerald-400 font-medium"><span class="h-2 w-2 bg-emerald-500 rounded-full inline-block mr-1.5 animate-pulse"></span>Online</span>
+                </div>
+                <p class="text-[10px] text-slate-500">ACVS Model v3.4 (Flash-Agri)</p>
+            </div>
+        </aside>
+
+        <!-- Main Scrollable Area -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-slate-100 flex flex-col">
+            
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="space-y-6">
+                <!-- Top Header banner -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>ACVS Intelligence Dashboard</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Post-Harvest Value Optimization Hub</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Real-time quality prediction, PPD tracking, and economic routing for incoming cassava batches.</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                        <button onclick="switchTab('registration')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>Register New Batch</span>
+                        </button>
+                        <button onclick="switchTab('smart-station')" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                            <i class="fa-solid fa-microchip"></i>
+                            <span>Smart Intake Station</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Active Batches</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">128</h3>
+                            <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-flex items-center mt-2">
+                                <i class="fa-solid fa-arrow-trend-up mr-1"></i> +12 today
+                            </span>
+                        </div>
+                        <div class="h-14 w-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">High PPD Risk Batches</p>
+                            <h3 class="text-3xl font-extrabold text-rose-600 mt-1">17</h3>
+                            <span class="text-xs font-medium text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full inline-flex items-center mt-2">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Urgent Action
+                            </span>
+                        </div>
+                        <div class="h-14 w-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Average Starch Content</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900 mt-1">24.8%</h3>
+                            <span class="text-xs font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full inline-flex items-center mt-2">
+                                <i class="fa-solid fa-check mr-1"></i> Optimal Range
+                            </span>
+                        </div>
+                        <div class="h-14 w-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Expected Value Optimized</p>
+                            <h3 class="text-3xl font-extrabold text-emerald-600 mt-1">+12.6%</h3>
+                            <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-flex items-center mt-2">
+                                <i class="fa-solid fa-chart-line mr-1"></i> vs Baseline
+                            </span>
+                        </div>
+                        <div class="h-14 w-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-sack-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Middle Section: Batch Priority Overview & Route Comparison -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Batch Priority Overview Table -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900">Batch Priority Overview</h3>
+                                <p class="text-xs text-slate-500">Sorted by AI recommended urgency and post-harvest deterioration risk.</p>
+                            </div>
+                            <button onclick="switchTab('priority')" class="text-xs font-semibold text-brand-600 hover:text-brand-700 bg-brand-50 px-3 py-1.5 rounded-lg transition">View All Queue &rarr;</button>
+                        </div>
+                        
+                        <div class="overflow-x-auto flex-1">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                                        <th class="py-3 px-3">Batch ID</th>
+                                        <th class="py-3 px-3">Variety</th>
+                                        <th class="py-3 px-3">Age</th>
+                                        <th class="py-3 px-3">PPD Risk</th>
+                                        <th class="py-3 px-3">Starch</th>
+                                        <th class="py-3 px-3">Priority</th>
+                                        <th class="py-3 px-3">Recommendation</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-sm">
+                                    <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-017')">
+                                        <td class="py-3 px-3 font-semibold text-brand-600">TN-017</td>
+                                        <td class="py-3 px-3 text-slate-600">KM94</td>
+                                        <td class="py-3 px-3 text-slate-600">52h</td>
+                                        <td class="py-3 px-3"><span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full text-xs font-semibold">High</span></td>
+                                        <td class="py-3 px-3 font-medium text-slate-800">25.8%</td>
+                                        <td class="py-3 px-3"><span class="font-bold text-slate-900">#1</span></td>
+                                        <td class="py-3 px-3"><span class="bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg text-xs font-semibold">Process &rarr; Starch</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-023')">
+                                        <td class="py-3 px-3 font-semibold text-brand-600">TN-023</td>
+                                        <td class="py-3 px-3 text-slate-600">KM94</td>
+                                        <td class="py-3 px-3 text-slate-600">31h</td>
+                                        <td class="py-3 px-3"><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-xs font-semibold">Medium</span></td>
+                                        <td class="py-3 px-3 font-medium text-slate-800">24.7%</td>
+                                        <td class="py-3 px-3"><span class="font-bold text-slate-900">#2</span></td>
+                                        <td class="py-3 px-3"><span class="bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg text-xs font-semibold">Process &rarr; Starch</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-005')">
+                                        <td class="py-3 px-3 font-semibold text-brand-600">TN-005</td>
+                                        <td class="py-3 px-3 text-slate-600">KM419</td>
+                                        <td class="py-3 px-3 text-slate-600">46h</td>
+                                        <td class="py-3 px-3"><span class="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full text-xs font-semibold">High</span></td>
+                                        <td class="py-3 px-3 font-medium text-slate-800">22.9%</td>
+                                        <td class="py-3 px-3"><span class="font-bold text-slate-900">#3</span></td>
+                                        <td class="py-3 px-3"><span class="bg-purple-50 text-purple-700 px-2.5 py-1 rounded-lg text-xs font-semibold">Process &rarr; Ethanol</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-011')">
+                                        <td class="py-3 px-3 font-semibold text-brand-600">TN-011</td>
+                                        <td class="py-3 px-3 text-slate-600">KM94</td>
+                                        <td class="py-3 px-3 text-slate-600">18h</td>
+                                        <td class="py-3 px-3"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-semibold">Low</span></td>
+                                        <td class="py-3 px-3 font-medium text-slate-800">26.1%</td>
+                                        <td class="py-3 px-3"><span class="font-bold text-slate-900">#4</span></td>
+                                        <td class="py-3 px-3"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-semibold">Wait 24h</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Processing Route Comparison Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-bold text-slate-900">Route Comparison</h3>
+                                <span class="bg-brand-50 text-brand-700 text-xs px-2.5 py-1 rounded-lg font-bold">Active Assumption</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-4">Current expected economic value per ton across processing streams for incoming batch queue.</p>
+                            
+                            <div class="space-y-3">
+                                <div class="p-3.5 rounded-xl border-2 border-brand-500 bg-brand-50/50 flex items-center justify-between shadow-sm">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="h-10 w-10 bg-brand-600 text-white rounded-xl flex items-center justify-center font-bold">
+                                            <i class="fa-solid fa-industry"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-900">Starch Processing</p>
+                                            <span class="text-[10px] bg-brand-600 text-white px-2 py-0.5 rounded-full font-semibold">Recommended</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-base font-extrabold text-brand-700">1.52M</p>
+                                        <p class="text-[10px] text-slate-500">VND / ton</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between hover:bg-slate-50 transition">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="h-10 w-10 bg-slate-800 text-white rounded-xl flex items-center justify-center font-bold">
+                                            <i class="fa-solid fa-flask"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-900">Ethanol Production</p>
+                                            <span class="text-[10px] text-slate-500">Alternative Route</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-base font-extrabold text-slate-800">1.21M</p>
+                                        <p class="text-[10px] text-slate-500">VND / ton</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl border border-slate-200 bg-white flex items-center justify-between hover:bg-slate-50 transition">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="h-10 w-10 bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center font-bold">
+                                            <i class="fa-solid fa-box-archive"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-900">Animal Feed / Other</p>
+                                            <span class="text-[10px] text-slate-500">Low Grade Stream</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-base font-extrabold text-slate-800">0.91M</p>
+                                        <p class="text-[10px] text-slate-500">VND / ton</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                            <span>Confidence: <strong class="text-slate-800">82%</strong></span>
+                            <button onclick="switchTab('decision')" class="text-brand-600 font-semibold hover:underline">Full Analysis &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quality Trend Chart Widget -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Fleet Quality Deterioration Trend (PPD Forecast)</h3>
+                            <p class="text-xs text-slate-500">Predicted average starch quality and PPD risk over a 72-hour horizon.</p>
+                        </div>
+                        <div class="flex items-center space-x-4 mt-2 md:mt-0 text-xs font-medium">
+                            <span class="flex items-center"><span class="h-3 w-3 rounded-full bg-brand-500 inline-block mr-1.5"></span> Starch Content (%)</span>
+                            <span class="flex items-center"><span class="h-3 w-3 rounded-full bg-rose-500 inline-block mr-1.5"></span> PPD Severity Risk</span>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Visual Chart -->
+                    <div class="h-48 w-full bg-slate-50 rounded-xl border border-slate-200 p-4 flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center px-8 pointer-events-none">
+                            <div class="w-full border-b border-dashed border-slate-200"></div>
+                        </div>
+                        <div class="absolute inset-y-0 left-12 flex flex-col justify-between py-6 pointer-events-none text-[10px] text-slate-400">
+                            <span>27%</span>
+                            <span>25%</span>
+                            <span>23%</span>
+                        </div>
+                        
+                        <!-- SVG Line Chart Mock -->
+                        <svg class="absolute inset-x-12 inset-y-8 w-[calc(100%-6rem)] h-[calc(100%-4rem)] overflow-visible" preserveAspectRatio="none" viewBox="0 0 400 100">
+                            <!-- Starch Line -->
+                            <path d="M 0,20 Q 130,35 260,65 T 400,85" fill="none" stroke="#1b7a43" stroke-width="3" stroke-linecap="round"/>
+                            <!-- PPD Risk Line -->
+                            <path d="M 0,75 Q 130,60 260,35 T 400,10" fill="none" stroke="#f43f5e" stroke-width="3" stroke-dasharray="4" stroke-linecap="round"/>
+                            <!-- Data points -->
+                            <circle cx="0" cy="20" r="5" fill="#1b7a43"/>
+                            <circle cx="133" cy="38" r="5" fill="#1b7a43"/>
+                            <circle cx="266" cy="62" r="5" fill="#1b7a43"/>
+                            <circle cx="400" cy="85" r="5" fill="#1b7a43"/>
+                        </svg>
+
+                        <!-- X-Axis Labels -->
+                        <div class="flex justify-between text-xs font-bold text-slate-600 z-10 pt-36 px-4">
+                            <span>NOW (Harvest +0h)</span>
+                            <span>+24H</span>
+                            <span>+48H</span>
+                            <span>+72H (Critical)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: SMART INTAKE STATION -->
+            <div id="view-smart-station" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-microchip"></i>
+                            <span>Physical Hardware Integration</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">ACVS Smart Intake Station Prototype</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Physical inspection booth equipped with high-res camera, environmental sensors, and edge AI.</p>
+                    </div>
+                    <button onclick="switchTab('registration')" class="mt-4 md:mt-0 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition">
+                        Proceed to Batch Registration &rarr;
+                    </button>
+                </div>
+
+                <!-- Prototype Hardware Visual Representation -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center relative overflow-hidden">
+                        <div class="absolute top-4 left-4 bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-semibold">
+                            Physical Unit #ACVS-S03
+                        </div>
+                        <!-- Illustration of Station -->
+                        <div class="my-6 w-full max-w-md bg-slate-900 rounded-2xl p-4 shadow-xl border border-slate-700 relative">
+                            <div class="absolute top-2 right-4 flex space-x-1.5">
+                                <div class="h-2.5 w-2.5 rounded-full bg-rose-500"></div>
+                                <div class="h-2.5 w-2.5 rounded-full bg-amber-500"></div>
+                                <div class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            </div>
+                            <div class="h-48 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700 relative overflow-hidden">
+                                <div class="absolute inset-0 opacity-40 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                                <div class="text-center z-10">
+                                    <div class="h-20 w-40 bg-slate-700 rounded-lg mx-auto flex items-center justify-center border border-slate-600 shadow-inner">
+                                        <span class="text-xs text-brand-300 font-mono"><i class="fa-solid fa-camera mr-1"></i> OPTICAL SCANNER ACTIVE</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 mt-3">Sample Tray #02 Loaded &bull; 29.4&deg;C &bull; 72% RH</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-xs text-slate-400 px-2">
+                                <span>Status: <strong class="text-emerald-400">Ready for Scan</strong></span>
+                                <button onclick="triggerQuickScan()" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-4 py-2 rounded-lg shadow transition">
+                                    Trigger Scan
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 text-center">Touchscreen interface synchronized in real-time with cloud dashboard.</p>
+                    </div>
+
+                    <!-- Station Sensor Panel & Architecture Integration -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">Intake Station Features & Sensors</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start space-x-3">
+                                    <div class="bg-brand-100 text-brand-700 p-2.5 rounded-lg">
+                                        <i class="fa-solid fa-camera"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-800">High-Resolution Camera Array</h4>
+                                        <p class="text-xs text-slate-500">Multi-angle optical capture detects vascular discoloration, skin damage, and rot spots.</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start space-x-3">
+                                    <div class="bg-amber-100 text-amber-700 p-2.5 rounded-lg">
+                                        <i class="fa-solid fa-temperature-arrow-up"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-800">Environmental IoT Sensors</h4>
+                                        <p class="text-xs text-slate-500">Real-time ambient temperature and humidity tracking to calibrate post-harvest deterioration models.</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start space-x-3">
+                                    <div class="bg-purple-100 text-purple-700 p-2.5 rounded-lg">
+                                        <i class="fa-solid fa-tablet-screen-button"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-800">Edge Touchscreen Console</h4>
+                                        <p class="text-xs text-slate-500">Allows operators to input batch origin, harvest date, and variety code in under 30 seconds.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs text-slate-500">Synchronized with ACVS Core Engine</span>
+                            <span class="text-xs font-semibold text-brand-600 bg-brand-50 px-3 py-1 rounded-lg">Connected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: BATCH REGISTRATION & AI SCAN -->
+            <div id="view-registration" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-camera-retro"></i>
+                            <span>Intake & Registration</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Register New Cassava Batch</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Input batch parameters and capture sample imagery for AI quality prediction.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Registration Form Fields -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Batch Metadata & Parameters</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Batch ID</label>
+                                <input type="text" id="reg-batch-id" value="TN-260930-017" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Cassava Variety</label>
+                                <select id="reg-variety" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand-500">
+                                    <option value="KM94" selected>KM94 (High Starch)</option>
+                                    <option value="KM419">KM419 (Standard)</option>
+                                    <option value="HN3">HN3 (High Yield)</option>
+                                    <option value="SM937">SM937 (Early Harvest)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Harvest Date</label>
+                                <input type="date" value="2026-09-28" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Harvest Time & Age</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="time" value="06:30" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800">
+                                    <input type="text" value="52 hours ago" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-800" readonly>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Origin Location</label>
+                                <select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand-500">
+                                    <option value="DakLak" selected>Đắk Lắk (Sector B)</option>
+                                    <option value="TayNinh">Tây Ninh (Sector A)</option>
+                                    <option value="DongNai">Đồng Nai (Sector C)</option>
+                                    <option value="BinhDuong">Bình Dương (Sector D)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Transport Duration</label>
+                                <input type="text" value="8 hours" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Damage Level (Estimated)</label>
+                                <select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800">
+                                    <option value="Low" selected>Low (&lt; 5% bruising)</option>
+                                    <option value="Medium">Medium (5% - 15% bruising)</option>
+                                    <option value="High">High (&gt; 15% bruising)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Storage Condition</label>
+                                <select class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-800">
+                                    <option value="Shaded" selected>Shaded / Ventilated Shed</option>
+                                    <option value="DirectSun">Direct Sunlight / Tarpaulin</option>
+                                    <option value="ColdStore">Controlled Environment</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Capture & Scan Section -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-2">Cassava Sample Image</h3>
+                            <p class="text-xs text-slate-500 mb-4">Capture or upload sample roots for optical AI evaluation.</p>
+
+                            <div class="h-48 bg-slate-900 rounded-xl border border-slate-700 relative flex items-center justify-center overflow-hidden shadow-inner group">
+                                <img src="https://images.unsplash.com/photo-1599839575945-a9e5af0b3fa5?auto=format&fit=crop&w=600&q=80" alt="Cassava Sample" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x300/1e293b/ffffff?text=Cassava+Sample+Image'">
+                                <div class="absolute inset-0 bg-brand-900/20 mix-blend-multiply"></div>
+                                <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur text-white text-[10px] px-2.5 py-1 rounded-md">
+                                    Sample Tray #017 &bull; RGB 1080p
+                                </div>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-2 gap-2">
+                                <button onclick="simulatePhotoCapture()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Retake Photo</span>
+                                </button>
+                                <button onclick="simulateUpload()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-xl text-xs transition flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span>Upload File</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100">
+                            <button onclick="runAiScanAnimation()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center space-x-2 text-sm tracking-wide">
+                                <i class="fa-solid fa-brain"></i>
+                                <span>SCAN BATCH WITH AI</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Scanning Animation Overlay -->
+            <div id="ai-scanning-modal" class="fixed inset-0 bg-navy-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+                <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-8 text-center space-y-6 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-emerald-400 to-brand-600 animate-pulse"></div>
+                    
+                    <div class="h-20 w-20 bg-brand-50 text-brand-600 rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-inner relative overflow-hidden">
+                        <i class="fa-solid fa-brain animate-bounce"></i>
+                        <div class="absolute inset-0 bg-brand-500/10 scanner-beam"></div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900" id="scan-status-title">Analyzing Cassava Batch...</h3>
+                        <p class="text-xs text-slate-500 mt-1" id="scan-status-desc">Processing optical imagery and environmental parameters.</p>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                        <div id="scan-progress-bar" class="bg-brand-600 h-2.5 rounded-full transition-all duration-300" style="width: 10%;"></div>
+                    </div>
+
+                    <div class="text-xs text-slate-400 font-mono" id="scan-log-text">
+                        Initializing neural network layers...
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AI ANALYSIS RESULT SCREEN -->
+            <div id="view-analysis" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-brain"></i>
+                            <span>AI Prediction Output</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Analysis Result: Batch <span id="result-batch-id-title">TN-260930-017</span></h2>
+                        <p class="text-sm text-slate-500 mt-0.5">KM94 &bull; 52 hours after harvest &bull; Đắk Lắk &bull; Estimated values (Not lab-certified)</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                        <button onclick="switchTab('forecast')" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow transition">
+                            View 72h Quality Forecast &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 Major Result Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Starch Content (Estimated)</p>
+                        <h3 class="text-3xl font-extrabold text-slate-900 mt-2">25.8%</h3>
+                        <p class="text-xs text-slate-500 mt-1">Expected range: 24% – 30%</p>
+                        <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-brand-600 h-1.5 rounded-full" style="width: 86%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">PPD Severity Index</p>
+                        <h3 class="text-3xl font-extrabold text-amber-600 mt-2">0.37</h3>
+                        <p class="text-xs text-slate-500 mt-1">Scale: 0.0 (Clean) – 1.0 (Rot)</p>
+                        <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-amber-500 h-1.5 rounded-full" style="width: 37%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">PPD Deterioration Risk</p>
+                        <h3 class="text-3xl font-extrabold text-rose-600 mt-2">HIGH</h3>
+                        <p class="text-xs text-rose-600 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Urgent processing needed</p>
+                        <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-rose-500 h-1.5 rounded-full" style="width: 80%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ethanol Potential</p>
+                        <h3 class="text-3xl font-extrabold text-slate-900 mt-2">68.4 <span class="text-lg font-medium text-slate-500">L/ton</span></h3>
+                        <p class="text-xs text-slate-500 mt-1">Alternative fermentation yield</p>
+                        <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-slate-700 h-1.5 rounded-full" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Parameters & AI Reasoning -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Sample Optical Analysis & Vascular Assessment</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                            <div class="h-48 rounded-xl overflow-hidden relative border border-slate-200">
+                                <img src="https://images.unsplash.com/photo-1599839575945-a9e5af0b3fa5?auto=format&fit=crop&w=600&q=80" alt="Scanned Sample" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                                    <span class="text-xs text-white font-mono">Confidence Score: 89.4%</span>
+                                </div>
+                            </div>
+                            <div class="space-y-3 text-sm text-slate-600">
+                                <p><strong class="text-slate-800">Root Vascular Scan:</strong> Minor bluish streaks detected near proximal end, indicating early Post-Harvest Physiological Deterioration (PPD).</p>
+                                <p><strong class="text-slate-800">Environmental Factor:</strong> High ambient humidity (72%) during transport accelerated enzymatic browning.</p>
+                                <p><strong class="text-slate-800">Recommendation Summary:</strong> Immediate routing to starch production line to maximize economic return before PPD compromises extractable starch.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">Model Confidence</h3>
+                            <div class="flex items-center justify-center my-6">
+                                <div class="h-28 w-28 rounded-full border-8 border-brand-600 flex items-center justify-center text-2xl font-extrabold text-slate-900 shadow-inner">
+                                    82%
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 text-center">Calculated from optical recognition, multi-spectral features, and historical plant intake records.</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100">
+                            <button onclick="switchTab('decision')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition">
+                                View Processing Decision &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: QUALITY FORECAST SCREEN -->
+            <div id="view-forecast" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Predictive Analytics</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Post-Harvest Quality Forecast (72-Hour Horizon)</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Tracking predicted starch degradation and PPD escalation over time.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Interactive Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-2 border-brand-500 bg-brand-50/20">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-extrabold text-brand-700 bg-brand-100 px-2.5 py-1 rounded-lg">NOW (+0h)</span>
+                            <span class="text-xs text-slate-500">Current</span>
+                        </div>
+                        <p class="text-2xl font-extrabold text-slate-900">25.8% <span class="text-xs font-normal text-slate-500">Starch</span></p>
+                        <p class="text-xs text-amber-600 font-semibold mt-2">PPD Risk: Medium</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Optimal window for processing.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">+24 Hours</span>
+                            <span class="text-xs text-amber-600 font-semibold">Warning</span>
+                        </div>
+                        <p class="text-2xl font-extrabold text-slate-900">24.2% <span class="text-xs font-normal text-slate-500">Starch</span></p>
+                        <p class="text-xs text-rose-600 font-semibold mt-2">PPD Risk: High</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Value loss: -320,000 VND/ton</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">+48 Hours</span>
+                            <span class="text-xs text-rose-600 font-semibold">Critical</span>
+                        </div>
+                        <p class="text-2xl font-extrabold text-slate-900">21.5% <span class="text-xs font-normal text-slate-500">Starch</span></p>
+                        <p class="text-xs text-rose-700 font-semibold mt-2">PPD Risk: Very High</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Value loss: -680,000 VND/ton</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">+72 Hours</span>
+                            <span class="text-xs text-rose-800 font-semibold">Spoilage</span>
+                        </div>
+                        <p class="text-2xl font-extrabold text-slate-900">&lt; 18% <span class="text-xs font-normal text-slate-500">Starch</span></p>
+                        <p class="text-xs text-rose-900 font-semibold mt-2">PPD Risk: Critical</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Unfit for prime starch extraction.</p>
+                    </div>
+                </div>
+
+                <!-- Value Loss Warning Banner -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="h-12 w-12 bg-amber-500 text-white rounded-xl flex items-center justify-center text-xl shrink-0 shadow">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-amber-900">Economic Spoilage Warning</h4>
+                            <p class="text-xs text-amber-800 mt-0.5">Estimated economic value loss if processing of Batch TN-017 is delayed by 24 hours: <strong class="text-rose-700 font-extrabold">-320,000 VND / ton</strong>.</p>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('decision')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shrink-0 shadow">
+                        Optimize Processing Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW: PROCESSING DECISION SCREEN -->
+            <div id="view-decision" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span>Decision Support System (DSS)</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">AI Processing Recommendation & Economic Optimization</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Determining optimal processing timing and route to maximize net economic return per ton.</p>
+                    </div>
+                </div>
+
+                <!-- Recommendation Banner -->
+                <div class="bg-brand-900 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-brand-800/30 text-9xl pointer-events-none">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between relative z-10">
+                        <div class="space-y-2">
+                            <span class="bg-brand-500 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                                Recommended Action: Prioritize Processing Within 12 Hours
+                            </span>
+                            <h3 class="text-2xl font-extrabold mt-2 text-white">Route: STARCH PROCESSING</h3>
+                            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                                High predicted PPD risk combined with 25.8% starch content indicates that immediate starch extraction yields the highest net economic value before quality degradation.
+                            </p>
+                        </div>
+                        <div class="mt-6 md:mt-0 bg-brand-800/80 border border-brand-700 p-4 rounded-xl text-center shrink-0">
+                            <p class="text-xs text-slate-300">Confidence Score</p>
+                            <p class="text-3xl font-extrabold text-emerald-400 mt-0.5">82%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Economic Comparison Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">Economic Breakdown Comparison (per ton)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                                    <th class="py-3 px-4">Processing Route</th>
+                                    <th class="py-3 px-4">Expected Revenue</th>
+                                    <th class="py-3 px-4">Processing Cost</th>
+                                    <th class="py-3 px-4">Logistics Cost</th>
+                                    <th class="py-3 px-4">Expected Economic Value</th>
+                                    <th class="py-3 px-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="bg-brand-50/50 font-semibold">
+                                    <td class="py-3 px-4 text-brand-700 flex items-center space-x-2">
+                                        <i class="fa-solid fa-circle-check text-brand-600"></i>
+                                        <span>Starch Processing</span>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-800">2.40M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.70M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.20M VND</td>
+                                    <td class="py-3 px-4 text-brand-700 font-extrabold text-base">1.50M VND</td>
+                                    <td class="py-3 px-4"><span class="bg-brand-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">Optimal</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 text-slate-800 flex items-center space-x-2">
+                                        <i class="fa-solid fa-flask text-slate-400"></i>
+                                        <span>Ethanol Production</span>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-800">2.00M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.60M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.20M VND</td>
+                                    <td class="py-3 px-4 text-slate-900 font-bold">1.20M VND</td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs">Alternative</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 text-slate-800 flex items-center space-x-2">
+                                        <i class="fa-solid fa-box-archive text-slate-400"></i>
+                                        <span>Animal Feed / Other</span>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-800">1.60M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.50M VND</td>
+                                    <td class="py-3 px-4 text-slate-600">0.20M VND</td>
+                                    <td class="py-3 px-4 text-slate-900 font-bold">0.90M VND</td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs">Low Value</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500">
+                        <em>Disclaimer: Recommendations are decision-support outputs and should be validated against operational factory capacity and laboratory testing data.</em>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: BATCH PRIORITY QUEUE -->
+            <div id="view-priority" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-list-ol"></i>
+                            <span>Factory Operations Queue</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Processing Priority Queue</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Ranked incoming batches based on PPD deterioration urgency and economic return.</p>
+                    </div>
+                </div>
+
+                <!-- Queue Table with filters -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="Search batch ID..." class="bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:border-brand-500 w-64">
+                            <select class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-700">
+                                <option value="">Filter by Risk: All</option>
+                                <option value="High">High Risk</option>
+                                <option value="Medium">Medium Risk</option>
+                                <option value="Low">Low Risk</option>
+                            </select>
+                        </div>
+                        <span class="text-xs text-slate-500">Showing <strong>8</strong> active queue items</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                                    <th class="py-3 px-3">Rank</th>
+                                    <th class="py-3 px-3">Batch ID</th>
+                                    <th class="py-3 px-3">Variety</th>
+                                    <th class="py-3 px-3">Age</th>
+                                    <th class="py-3 px-3">PPD Risk</th>
+                                    <th class="py-3 px-3">Starch</th>
+                                    <th class="py-3 px-3">Action Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-017')">
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">#1</td>
+                                    <td class="py-3 px-3 font-semibold text-brand-600">TN-017</td>
+                                    <td class="py-3 px-3 text-slate-600">KM94</td>
+                                    <td class="py-3 px-3 text-slate-600">52h</td>
+                                    <td class="py-3 px-3"><span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">High</span></td>
+                                    <td class="py-3 px-3 font-medium text-slate-800">25.8%</td>
+                                    <td class="py-3 px-3"><span class="bg-brand-50 text-brand-700 px-3 py-1 rounded-lg text-xs font-semibold">Process Now &rarr; Starch</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-023')">
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">#2</td>
+                                    <td class="py-3 px-3 font-semibold text-brand-600">TN-023</td>
+                                    <td class="py-3 px-3 text-slate-600">KM94</td>
+                                    <td class="py-3 px-3 text-slate-600">31h</td>
+                                    <td class="py-3 px-3"><span class="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">Medium</span></td>
+                                    <td class="py-3 px-3 font-medium text-slate-800">24.7%</td>
+                                    <td class="py-3 px-3"><span class="bg-brand-50 text-brand-700 px-3 py-1 rounded-lg text-xs font-semibold">Process within 12h &rarr; Starch</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-005')">
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">#3</td>
+                                    <td class="py-3 px-3 font-semibold text-brand-600">TN-005</td>
+                                    <td class="py-3 px-3 text-slate-600">KM419</td>
+                                    <td class="py-3 px-3 text-slate-600">46h</td>
+                                    <td class="py-3 px-3"><span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">High</span></td>
+                                    <td class="py-3 px-3 font-medium text-slate-800">22.9%</td>
+                                    <td class="py-3 px-3"><span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg text-xs font-semibold">Process Now &rarr; Ethanol</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-011')">
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">#4</td>
+                                    <td class="py-3 px-3 font-semibold text-brand-600">TN-011</td>
+                                    <td class="py-3 px-3 text-slate-600">KM94</td>
+                                    <td class="py-3 px-3 text-slate-600">18h</td>
+                                    <td class="py-3 px-3"><span class="bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">Low</span></td>
+                                    <td class="py-3 px-3 font-medium text-slate-800">26.1%</td>
+                                    <td class="py-3 px-3"><span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-xs font-semibold">Can Wait 24h</span></td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 cursor-pointer transition" onclick="openBatchDetail('TN-018')">
+                                    <td class="py-3 px-3 font-extrabold text-slate-900">#5</td>
+                                    <td class="py-3 px-3 font-semibold text-brand-600">TN-018</td>
+                                    <td class="py-3 px-3 text-slate-600">KM94</td>
+                                    <td class="py-3 px-3 text-slate-600">24h</td>
+                                    <td class="py-3 px-3"><span class="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full text-xs font-semibold">Medium</span></td>
+                                    <td class="py-3 px-3 font-medium text-slate-800">25.0%</td>
+                                    <td class="py-3 px-3"><span class="bg-brand-50 text-brand-700 px-3 py-1 rounded-lg text-xs font-semibold">Process &rarr; Starch</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: 4-LAYER ARCHITECTURE -->
+            <div id="view-architecture" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <span>System Architecture</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">ACVS Four-Layer Intelligence Architecture</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">End-to-end data pipeline from physical intake to economic optimization.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-extrabold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg">Layer 1</span>
+                            <h3 class="text-lg font-bold text-slate-900 mt-3 mb-2">DATA COLLECTION</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Combines multi-angle optical camera images, batch harvest metadata, environmental IoT sensors (temp & humidity), and transport logistics duration.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 text-brand-600 text-xs font-semibold">
+                            <i class="fa-solid fa-arrow-down mr-1"></i> Feeds AI Engine
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-extrabold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg">Layer 2</span>
+                            <h3 class="text-lg font-bold text-slate-900 mt-3 mb-2">AI PREDICTION</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Neural network models estimate starch content percentage, post-harvest physiological deterioration (PPD) severity, and ethanol fermentation potential.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 text-blue-600 text-xs font-semibold">
+                            <i class="fa-solid fa-arrow-down mr-1"></i> Feeds DSS Engine
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-extrabold bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg">Layer 3</span>
+                            <h3 class="text-lg font-bold text-slate-900 mt-3 mb-2">DECISION SUPPORT</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Recommends exact processing timing windows (e.g., process within 12h) and compares optimal industrial routing (Starch vs Ethanol vs Feed).
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 text-amber-600 text-xs font-semibold">
+                            <i class="fa-solid fa-arrow-down mr-1"></i> Feeds Optimizer
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-extrabold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-lg">Layer 4</span>
+                            <h3 class="text-lg font-bold text-slate-900 mt-3 mb-2">ECONOMIC OPTIMIZATION</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Calculates net expected economic value per ton, minimizing post-harvest loss and maximizing factory throughput and financial profitability.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 text-emerald-600 text-xs font-semibold">
+                            <i class="fa-solid fa-check mr-1"></i> Fully Optimized
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: REPORTS -->
+            <div id="view-reports" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>Reports & Exports</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Factory Intake & Quality Reports</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Export operational analytics for management and agricultural supply chain audit.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="h-12 w-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-900 mb-1">Daily PPD & Spoilage Audit</h3>
+                            <p class="text-xs text-slate-500">Summary of high-risk batches, value loss prevention metrics, and transport delay impacts.</p>
+                        </div>
+                        <button onclick="showToast('Downloading PDF Report...')" class="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 rounded-xl text-xs transition">
+                            Download PDF
+                        </button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="h-12 w-12 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-900 mb-1">Starch Yield & Economic Export</h3>
+                            <p class="text-xs text-slate-500">Spreadsheet containing batch varieties, starch estimates, and route profitability comparisons.</p>
+                        </div>
+                        <button onclick="showToast('Exporting Excel Sheet...')" class="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 rounded-xl text-xs transition">
+                            Download Excel
+                        </button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl mb-4">
+                                <i class="fa-solid fa-chart-column"></i>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-900 mb-1">Monthly Optimization Summary</h3>
+                            <p class="text-xs text-slate-500">Comprehensive review of 12.6% value increase achieved across all factory intake lines.</p>
+                        </div>
+                        <button onclick="showToast('Generating Summary...')" class="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 rounded-xl text-xs transition">
+                            Download Summary
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AI ASSISTANT -->
+            <div id="view-assistant" class="space-y-6 hidden">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-600 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <i class="fa-solid fa-robot"></i>
+                            <span>Intelligent Assistant</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">ACVS Explanatory AI Assistant</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Ask questions about ACVS batch predictions, processing routes, and PPD risks.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-[500px]">
+                    <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                        <div class="flex items-start space-x-3">
+                            <div class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                            <div class="bg-slate-100 p-4 rounded-2xl max-w-xl text-sm text-slate-800">
+                                Hello! I am your ACVS decision-support assistant. I can explain why specific batches were prioritized or how processing routes are calculated. How can I help you today?
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3 justify-end">
+                            <div class="bg-brand-600 text-white p-4 rounded-2xl max-w-xl text-sm">
+                                Why should Batch TN-017 be processed first?
+                            </div>
+                            <div class="h-8 w-8 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold shrink-0">FP</div>
+                        </div>
+
+                        <div class="flex items-start space-x-3">
+                            <div class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                            <div class="bg-slate-100 p-4 rounded-2xl max-w-xl text-sm text-slate-800">
+                                <strong>Batch TN-017</strong> has a high predicted PPD risk (severity 0.37) and a high starch content (25.8%). Under current plant capacity and price assumptions, processing it within 12 hours is expected to preserve approximately <strong>320,000 VND/ton</strong> in economic value compared to a 24-hour delay.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-200 flex items-center space-x-2">
+                        <input type="text" id="chat-input" placeholder="Ask a question about batch analysis or routing..." class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-brand-500" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl text-sm transition shadow">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Batch Detail Modal -->
+    <div id="batch-detail-modal" class="fixed inset-0 bg-navy-900/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full p-6 space-y-6 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg uppercase">Batch Analysis Details</span>
+                    <h3 class="text-xl font-extrabold text-slate-900 mt-1" id="modal-batch-title">Batch TN-017</h3>
+                </div>
+                <button onclick="closeBatchDetail()" class="h-9 w-9 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-sm">
+                    <p class="flex justify-between"><strong class="text-slate-500">Variety:</strong> <span class="font-semibold text-slate-800">KM94</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">Harvest Age:</strong> <span class="font-semibold text-slate-800">52 hours</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">Origin:</strong> <span class="font-semibold text-slate-800">Đắk Lắk</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">Transport:</strong> <span class="font-semibold text-slate-800">8 hours</span></p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-sm">
+                    <p class="flex justify-between"><strong class="text-slate-500">Starch Content:</strong> <span class="font-semibold text-brand-600">25.8% (Estimated)</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">PPD Severity:</strong> <span class="font-semibold text-amber-600">0.37</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">PPD Risk:</strong> <span class="font-semibold text-rose-600">HIGH</span></p>
+                    <p class="flex justify-between"><strong class="text-slate-500">Recommended Route:</strong> <span class="font-semibold text-brand-700">Starch</span></p>
+                </div>
+            </div>
+
+            <div class="bg-brand-50/50 border border-brand-200 rounded-xl p-4">
+                <h4 class="text-sm font-bold text-brand-900 mb-1"><i class="fa-solid fa-lightbulb text-brand-600 mr-1.5"></i> AI Decision Rationale</h4>
+                <p class="text-xs text-slate-700 leading-relaxed">
+                    This batch exhibits early vascular discoloration. Processing within 12 hours preserves an estimated 1.50M VND/ton net economic value. Delaying by 24 hours will reduce extractable starch and increase spoilage loss.
+                </p>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeBatchDetail()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
+                    Close
+                </button>
+                <button onclick="closeBatchDetail(); switchTab('decision')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow">
+                    View Full Decision Screen &rarr;
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast-banner" class="fixed bottom-6 right-6 bg-navy-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl z-50 flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 border border-slate-700">
+        <div class="h-7 w-7 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold" id="toast-title">Success</p>
+            <p class="text-[11px] text-slate-300" id="toast-desc">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Live Clock Updater
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('live-clock').innerText = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const views = ['dashboard', 'smart-station', 'registration', 'analysis', 'forecast', 'decision', 'priority', 'architecture', 'reports', 'assistant'];
+            views.forEach(v => {
+                const el = document.getElementById('view-' + v);
+                if (el) el.classList.add('hidden');
+                const nav = document.getElementById('nav-' + v);
+                if (nav) {
+                    nav.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
+                    nav.classList.add('hover:bg-slate-800', 'hover:text-white');
+                }
+            });
+
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) targetView.classList.remove('hidden');
+
+            const targetNav = document.getElementById('nav-' + tabId);
+            if (targetNav) {
+                targetNav.classList.remove('hover:bg-slate-800', 'hover:text-white');
+                targetNav.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+            }
+
+            // Scroll main container to top
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        // Toast Notification Trigger
+        function showToast(desc, title = 'ACVS Notification') {
+            const toast = document.getElementById('toast-banner');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-desc').innerText = desc;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        function openNotifications() {
+            showToast('No new factory alerts. All intake lines operating normally.');
+        }
+
+        // Simulated AI Scan Sequence Animation
+        function runAiScanAnimation() {
+            const modal = document.getElementById('ai-scanning-modal');
+            modal.classList.remove('hidden');
+
+            const progressBar = document.getElementById('scan-progress-bar');
+            const logText = document.getElementById('scan-log-text');
+            const title = document.getElementById('scan-status-title');
+            const desc = document.getElementById('scan-status-desc');
+
+            const steps = [
+                { progress: 20, text: "Capturing multi-angle optical imagery...", title: "Analyzing Cassava Images..." },
+                { progress: 40, text: "Combining batch metadata and environmental IoT sensors...", title: "Combining Data Layers..." },
+                { progress: 65, text: "Executing neural network starch estimation (KM94 model)...", title: "Estimating Starch Content..." },
+                { progress: 85, text: "Running PPD deterioration & 72h forecast simulation...", title: "Predicting PPD Risk..." },
+                { progress: 100, text: "Evaluating processing routes (Starch vs Ethanol) & economic value...", title: "Calculating Economic Optimization..." }
+            ];
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < steps.length) {
+                    progressBar.style.width = steps[i].progress + '%';
+                    logText.innerText = steps[i].text;
+                    title.innerText = steps[i].title;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        switchTab('analysis');
+                        showToast('Batch successfully scanned and analyzed by AI!');
+                    }, 500);
+                }
+            }, 600);
+        }
+
+        function triggerQuickScan() {
+            switchTab('registration');
+            setTimeout(() => {
+                runAiScanAnimation();
+            }, 400);
+        }
+
+        function simulatePhotoCapture() {
+            showToast('New sample photo captured successfully via high-res camera.');
+        }
+
+        function simulateUpload() {
+            showToast('Sample image file uploaded successfully.');
+        }
+
+        // Batch Detail Modal
+        function openBatchDetail(batchId) {
+            document.getElementById('modal-batch-title').innerText = 'Batch ' + batchId;
+            document.getElementById('batch-detail-modal').classList.remove('hidden');
+        }
+
+        function closeBatchDetail() {
+            document.getElementById('batch-detail-modal').classList.add('hidden');
+        }
+
+        // AI Assistant Chat Simulator
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatContainer = document.getElementById('chat-messages');
+
+            // User bubble
+            const userDiv = document.createElement('div');
+            userDiv.className = 'flex items-start space-x-3 justify-end';
+            userDiv.innerHTML = `
+                <div class="bg-brand-600 text-white p-4 rounded-2xl max-w-xl text-sm">${text}</div>
+                <div class="h-8 w-8 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold shrink-0">FP</div>
+            `;
+            chatContainer.appendChild(userDiv);
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // AI response after short delay
+            setTimeout(() => {
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'flex items-start space-x-3';
+                aiDiv.innerHTML = `
+                    <div class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                    <div class="bg-slate-100 p-4 rounded-2xl max-w-xl text-sm text-slate-800">
+                        Based on current ACVS models, ${text.toLowerCase().includes('why') ? 'processing priority is calculated dynamically using PPD risk severity and extractable starch percentage to maximize economic return per ton.' : 'this query is processed against our plant intake knowledge base. All recommendations are designed to minimize post-harvest loss.'}
+                    </div>
+                `;
+                chatContainer.appendChild(aiDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
